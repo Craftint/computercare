@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include computercare *.css
+recursive-include computercare *.csv
+recursive-include computercare *.html
+recursive-include computercare *.ico
+recursive-include computercare *.js
+recursive-include computercare *.json
+recursive-include computercare *.md
+recursive-include computercare *.png
+recursive-include computercare *.py
+recursive-include computercare *.svg
+recursive-include computercare *.txt
+recursive-exclude computercare *.pyc
