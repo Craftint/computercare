@@ -1,0 +1,171 @@
+<style>
+table {
+        table-layout: fixed;
+}
+table th, table td {
+    overflow: hidden;
+    white-space: normal;
+    word-wrap: break-word;
+}
+table th{
+    text-align: center;
+}
+.print-format table, .print-format tr, 
+.print-format td, .print-format div, 
+.print-format p, .print-format h4, .print-format h5,
+.print-format span
+{
+        font-family: Tahoma, sans-serif;
+}
+@media screen {
+  .print-format {
+    margin-left: 8mm;
+    margin-right: 8mm;
+    margin-top: 10mm;
+    padding: 8mm;
+    font-family: Tahoma, sans-serif;
+  }
+}
+.tristar-footer{
+  background-color: #e8e8e8;
+  font-weight: bold;
+}
+</style>
+<h4 class="text-left">{%= __("Customer ") %} : {%= filters.customer %}</h4>
+<h5 class="text-left">{%= __("Statement of Account as of ") %} {%= moment(filters.report_date).format('MMMM Do, YYYY') %}</h5>
+{% var balance_row = data.slice(-1).pop() ; 
+	   var range1 = "0-{range1}";
+	   var range2 = "{range1}-{range2}";
+	   var range3 = "{range2}-{range3}";
+	   var range4 = "{range3}-{range4}";
+	   var range5 = "{range4}-{above}";
+%}
+{% if(balance_row) { %}
+<table class="table table-bordered table-condensed table-sm small">
+	<caption class="text-right">(Amount in {%= data[0][__("currency")] || "" %})</caption>
+        <colgroup>
+            <col style="width: 30mm;">
+            <col style="width: 18mm;">
+            <col style="width: 18mm;">
+            <col style="width: 18mm;">
+            <col style="width: 18mm;">
+            <col style="width: 18mm;">
+            <col style="width: 18mm;">
+        </colgroup>
+
+	<thead>
+		<tr>
+			<th>{%= __(" ") %}</th>
+			<th>{%= __("0-30") %}</th>
+			<th>{%= __("31-60") %}</th>
+			<th>{%= __("61-90") %}</th>
+			<th>{%= __("91-120") %}</th>
+			<th>{%= __("121-Above") %}</th>
+			<th>{%= __("Total") %}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>{%= __("Total Outstanding") %}</td>
+			<td class="text-right">{%= format_currency(balance_row[range1]) %}</td>
+			<td class="text-right">{%= format_currency(balance_row[range2]) %}</td>
+			<td class="text-right">{%= format_currency(balance_row[range3]) %}</td>
+			<td class="text-right">{%= format_currency(balance_row[range4]) %}</td>
+			<td class="text-right">{%= format_currency(balance_row[range5]) %}</td>
+			<td class="text-right">
+				{%= format_currency(flt(balance_row["outstanding_amount"]), data[data.length-1]["currency"]) %}
+				</td>
+		</tr>
+			<td>{%= __("PDC") %}</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td class="text-right">
+				{%= format_currency(flt(balance_row[__("PDC Amount")]), data[data.length-1]["currency"]) %}
+			</td>
+		<tr class="tristar-footer">
+			<th class="text-left">{%= __("Cheques Required") %}</th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th class="text-right">
+				{%= format_currency(flt(balance_row["outstanding_amount"]-balance_row[__("PDC Amount")]), data[data.length-1]["currency"]) %}</th>
+		</tr>
+	</tbody>
+
+</table>
+{% } %}
+<div style="min-height:10px; max-height:10px;">
+<table class="table table-bordered table-condensed table-sm small">
+        <colgroup>
+            <col style="width: 18mm;">
+            <col style="width: 18mm;">
+            <col style="width: 22mm;">
+            <col style="width: 22mm;">
+            <col style="width: 18mm;">
+            <col style="width: 20mm;">
+            <col style="width: 22mm">
+        </colgroup>
+
+	<thead style="display: table-header-group;">
+		<tr>
+			<th>{%= __("Date") %}</th>
+			<th>{%= __("Invoice No.") %}</th>
+			<th>{%= __("Invoiced Amount") %}</th>
+			<th>{%= __("Outstanding Amount") %}</th>
+			<th>{%= __("PDC Date") %}</th>
+			<th>{%= __("PDC Ref") %}</th>
+			<th>{%= __("PDC Amount") %}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for(var i=0, l=data.length; i<l; i++) { %}
+		<tr>
+		{% if(data[i][__("Customer")] || data[i][__("Supplier")]) { %}
+
+			<td>{%= frappe.datetime.str_to_user(data[i][__("Posting Date")]) %}</td>
+			<td>
+				{%=  data[i][__("Voucher No")] %}</td>
+			<td class="text-right">
+				{%= format_currency(data[i]["invoiced_amount"], data[i]["currency"]) %}</td>
+			<td class="text-right">
+				{%= format_currency(data[i]["outstanding_amount"], data[i]["currency"]) %}</td>
+			<td>
+				{%=  frappe.datetime.str_to_user(data[i][__("PDC Date")]) %}</td>
+			<td>
+				{%=  data[i][__("PDC Ref")] %}</td>
+			<td class="text-right">
+				{%= format_currency(data[i][__("PDC Amount")], data[i]["currency"]) %}</td>
+
+		{% } else { %}
+
+		{% } %}
+		</tr>
+	{% } %}
+	{% if(balance_row ) { %}
+		<tr class="tristar-footer">
+			<th></th>
+			<th>{%= __("Total") %}</th>
+			<th class="text-right">
+				{%= format_currency(flt(balance_row["invoiced_amount"]), data[data.length-1]["currency"]) %}
+				</th>
+			<th class="text-right">
+				{%= format_currency(flt(balance_row["outstanding_amount"]), data[data.length-1]["currency"]) %}
+				</th>
+			<th></th>
+			<th></th>
+			<th class="text-right">
+				{%= format_currency(flt(balance_row[__("PDC Amount")]), data[data.length-1]["currency"]) %}
+				</th>
+		</tr>
+	{% } %}
+	</tbody>
+</table>
+<span class = "invisible" id="margin-left">8mm</span>
+<span class = "invisible" id="margin-right">8mm</span>
+
+
