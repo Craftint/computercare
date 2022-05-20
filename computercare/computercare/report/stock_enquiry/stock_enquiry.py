@@ -222,10 +222,8 @@ def get_items(filters):
 		if filters.item_group:
 			condition += " AND item.item_group = '%s' "%(filters.item_group)
 	items = []
-	query = """ select name from `tabItem` item
-		where item.disabled = 0
-  		 {condition} ;""".format(condition=condition)
-  	items = frappe.db.sql_list(query)
+	query = """ select name from `tabItem` item where item.disabled = 0 {condition} ;""".format(condition=condition)
+	items = frappe.db.sql_list(query)
   	#frappe.msgprint(_("items: {0}".format(items)))
 	return items
 

@@ -11,9 +11,12 @@ def execute(filters=None):
 	return _execute(filters)
 
 def _execute(filters, additional_table_columns=None, additional_query_columns=None):
+	print('::::::::::::::::::::::::::::::::::::::::::;')
 	if not filters: filters = frappe._dict({})
 
 	invoice_list = get_invoices(filters, additional_query_columns)
+	print('::::::::::::::::::::::::::::::::::::::22222222222222222::::;')
+
 	columns, income_accounts, tax_accounts = get_columns(invoice_list, additional_table_columns)
 
 	if not invoice_list:
@@ -29,6 +32,8 @@ def _execute(filters, additional_table_columns=None, additional_query_columns=No
 	mode_of_payments = get_mode_of_payments([inv.name for inv in invoice_list])
 
 	data = []
+
+	print('--->>>>>>>>>>>>>>>>>>>' ,filter ,additional_query_columns ,  invoice_list)
 	for inv in invoice_list:
 		# invoice details
 		sales_order = list(set(invoice_so_dn_map.get(inv.name, {}).get("sales_order", [])))
@@ -278,3 +283,4 @@ def get_costcenter_list(filters):
 	return frappe.db.sql("""select name, ifnull(abbr, name) as abbr 
 		from `tabCost Center` where is_group = 0
 		{condition}""".format(condition=condition), value, as_dict=1)
+

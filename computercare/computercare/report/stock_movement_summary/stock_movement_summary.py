@@ -261,9 +261,9 @@ def execute(filters=None):
 		
 	dict = {}
 	for elem in data:
-	  if elem[0] not in dict:
-		dict[elem[0]] = []
-	  dict[elem[0]].append(elem[1:])
+		if elem[0] not in dict:
+			dict[elem[0]] = []
+		dict[elem[0]].append(elem[1:])
 	  
 	for key in dict:
 		dict[key] = [sum(i) for i in zip(*dict[key])]
