@@ -278,3 +278,8 @@ def get_costcenter_list(filters):
 	return frappe.db.sql("""select name, ifnull(abbr, name) as abbr 
 		from `tabCost Center` where is_group = 0
 		{condition}""".format(condition=condition), value, as_dict=1)
+
+
+
+
+
