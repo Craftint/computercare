@@ -323,7 +323,7 @@ def sort_root_accounts(roots):
 			return -1
 		return 1
 
-	roots.sort(compare_roots)
+	roots.sort(key=compare_roots)
 
 
 def set_gl_entries_by_account(filters, period_list, root, gl_entries_by_account, ignore_closing_entries=False):
