@@ -139,7 +139,7 @@ def get_accounts(company, root_type, parent_account=None):
 	if parent_account:
 		parent = frappe.db.sql("""select lft, rgt from `tabAccount`
 		where company=%s and root_type=%s and account_name=%s""", (company, root_type, parent_account), as_dict=1)
-        if parent:
+		if parent:
 			return frappe.db.sql("""select name, case when (parent_account is not null and lft={0} and rgt={1}) then null else parent_account end as parent_account, lft, rgt, root_type, report_type, account_name from
 								`tabAccount` where (lft >= {0} and rgt <= {1})
 								order by lft""".format(parent[0].lft, parent[0].rgt), as_dict=True)
