@@ -27,6 +27,7 @@ computercare/computercare/report/daily_sales/__init__.py
 computercare/computercare/report/daily_sales/daily_sales.js
 computercare/computercare/report/daily_sales/daily_sales.json
 computercare/computercare/report/daily_sales/daily_sales.py
+computercare/computercare/report/daily_sales/daily_test.py
 computercare/computercare/report/pdc/__init__.py
 computercare/computercare/report/pdc/pdc.js
 computercare/computercare/report/pdc/pdc.json
