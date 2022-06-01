@@ -48,7 +48,6 @@ def execute(filters=None):
 	for (company, item, warehouse) in sorted(iwb_map):
 		if item_map.get(item):
 			qty_dict = iwb_map[(company, item, warehouse)]
-			
 			item_reorder_level = 0
 			item_reorder_qty = 0
 			if item + warehouse in item_reorder_detail_map:
@@ -77,7 +76,6 @@ def execute(filters=None):
 			if filters.get('show_variant_attributes', 0) == 1:
 				variants_attributes = get_variants_attributes()
 				report_data += [item_map[item].get(i) for i in variants_attributes]
-
 			if include_uom:
 				conversion_factors.append(item_map[item].conversion_factor)
 
@@ -114,7 +112,7 @@ def get_conditions(filters):
 		frappe.throw(_("'From Date' is required"))
 
 	if filters.get("to_date"):
-		conditions += " and sle.posting_date <= %s " % frappe.db.escape(filters.get("to_date"))
+		conditions += " and sle.posting_date <= %s" % frappe.db.escape(filters.get("to_date"))
 	else:
 		frappe.throw(_("'To Date' is required"))
 
@@ -131,7 +129,7 @@ def get_stock_ledger_entries(filters, items):
 	item_conditions_sql = ''
 	if items:
 		item_conditions_sql = ' and sle.item_code in ({})'\
-			.format(', '.join(['"' + frappe.db.escape(i, percent=False) + '"' for i in items]))
+			.format(', '.join([frappe.db.escape(i, percent=False) for i in items]))
 
 	conditions = get_conditions(filters)
 
@@ -230,22 +228,20 @@ def get_item_details(items, sle, filters):
 	item_details = {}
 	if not items:
 		items = list(set([d.item_code for d in sle]))
-
 	if items:
 		cf_field = cf_join = ""
 		if filters.get("include_uom"):
 			cf_field = ", ucd.conversion_factor"
 			cf_join = "left join `tabUOM Conversion Detail` ucd on ucd.parent=item.name and ucd.uom=%(include_uom)s"
-
+		
 		for item in frappe.db.sql("""
-			select item.name, item.item_name, item.description, item.item_group, item.brand, category, item.stock_uom{cf_field}
+			select item.name, item.item_name, item.description, item.item_group, item.brand, item.stock_uom{cf_field}
 			from `tabItem` item
 			{cf_join}
 			where item.name in ({names}) and ifnull(item.disabled, 0) = 0
-			""".format(cf_field=cf_field, cf_join=cf_join, names=', '.join(['"' + frappe.db.escape(i, percent=False) + '"' for i in items])),
+			""".format(cf_field=cf_field, cf_join=cf_join, names=', '.join([frappe.db.escape(i, percent=False) for i in items])),
 			{"include_uom": filters.get("include_uom")}, as_dict=1):
 				item_details.setdefault(item.name, item)
-
 	if filters.get('show_variant_attributes', 0) == 1:
 		variant_values = get_variant_values_for(list(item_details))
 		item_details = {k: v.update(variant_values.get(k, {})) for k, v in iteritems(item_details)}
@@ -277,6 +273,7 @@ def get_variants_attributes():
 def get_variant_values_for(items):
 	'''Returns variant values for items.'''
 	attribute_map = {}
+	
 	for attr in frappe.db.sql('''select parent, attribute, attribute_value
 		from `tabItem Variant Attribute` where parent in (%s)
 		''' % ", ".join(["%s"] * len(items)), tuple(items), as_dict=1):

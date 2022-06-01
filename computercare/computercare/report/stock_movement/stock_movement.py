@@ -17,7 +17,6 @@ def execute(filters=None):
 	conversion_factors = []
 	if opening_row:
 		data.append(opening_row)
-
 	for sle in sl_entries:
 		item_detail = item_details[sle.item_code]
 		
@@ -142,7 +141,7 @@ def get_item_details(items, sl_entries, include_uom):
 		from `tabItem` item
 		{cf_join}
 		where item.name in ({names})
-		""".format(cf_field=cf_field, cf_join=cf_join, names=', '.join(['"' + frappe.db.escape(i, percent=False) + '"' for i in items])),
+		""".format(cf_field=cf_field, cf_join=cf_join, names=', '.join([frappe.db.escape(i, percent=False) for i in items])),
 		{"include_uom": include_uom}, as_dict=1):
 			item_details.setdefault(item.name, item)
 
