@@ -19,11 +19,12 @@ def get_cost_center_list(filters):
 	return cost_center_list
 
 def get_cost_center(filters):
+	cc = tuple(filters.cost_center)
 	condition = " and company='%s'"%(filters.company)
 	if filters.division:
 		condition += " and division='%s'"%(filters.division)
 	if filters.cost_center:
-		condition += " and name='%s'"%(filters.cost_center)
+		condition += " and name in {}".format(cc)
 
 	return frappe.db.sql("""SELECT name, cost_center_name FROM `tabCost Center` WHERE is_group=0 {condition} ORDER BY cost_center_name""".format(condition=condition), as_dict=1)
 
@@ -160,13 +161,13 @@ def get_data(filters, period_list, root_type, balance_must_be, parent_account=No
 	gl_entries_by_account = {}
 	if parent_account:
 		for root in frappe.db.sql("""select lft, rgt from tabAccount
-				where root_type=%s and company=%s and account_name=%s """, (root_type, filters.company, parent_account), as_dict=1):
+				where root_type='%s' and company='%s' and account_name='%s' """ % (root_type, filters.company, parent_account), as_dict=1):
 			#and ifnull(parent_account, '') = ''
 			set_gl_entries_by_account(filters, period_list, root, gl_entries_by_account,
 				ignore_closing_entries=True)
 	else:
 		for root in frappe.db.sql("""select lft, rgt from tabAccount
-				where root_type=%s and ifnull(parent_account, '') = ''""", root_type, as_dict=1):
+				where root_type='%s' and ifnull(parent_account, '') = ''""", root_type, as_dict=1):
 			set_gl_entries_by_account(filters, period_list, root, gl_entries_by_account,
 				ignore_closing_entries=True)
 
@@ -334,9 +335,10 @@ def set_gl_entries_by_account(filters, period_list, root, gl_entries_by_account,
 		additional_conditions.append("and ifnull(voucher_type, '')!='Period Closing Voucher'")
 
 	if filters.cost_center:
-		additional_conditions.append("and cost_center = '{cost_center}'")
-	else:
-		additional_conditions.append("and cost_center = cost_center")
+		cc = tuple(filters.cost_center)
+		additional_conditions.append("and cost_center in {}".format(cc))
+	# else:
+	# 	additional_conditions.append("and cost_center = cost_center")
 
 	query = """select posting_date, account, debit, credit, is_opening, cost_center from `tabGL Entry`
 		where company='{company}'
@@ -352,6 +354,7 @@ def set_gl_entries_by_account(filters, period_list, root, gl_entries_by_account,
 			lft = root.lft,
 			rgt = root.rgt
 		)
+
 
 	gl_entries = frappe.db.sql(query, as_dict=True)
 

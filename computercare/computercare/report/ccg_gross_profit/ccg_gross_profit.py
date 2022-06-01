@@ -426,6 +426,7 @@ class GrossProfitGenerator(object):
 		#else:
 		#	sales_person_cols = ""
 		#	sales_team_table = ""
+		print("conditions",conditions)
 		sales_person_cols = " , sales.sales_person, sales.allocated_amount, sales.incentives "
 		sales_team_table = " left join `tabSales Team` sales on sales.parent = `tabSales Invoice`.name "
 		if self.filters.get("value"):

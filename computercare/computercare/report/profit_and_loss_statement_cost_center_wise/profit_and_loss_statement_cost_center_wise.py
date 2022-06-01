@@ -39,7 +39,7 @@ def execute(filters=None):
 				add_blank_row(data)
 
 	columns = get_columns(period_list, filters.company)
-	print ('columns',columns ) 
+	 
 	for i in columns:
 		#~ if i['fieldname'] == 'COMPUTER CARE - CARE':
 			#~ i['label'] = 'COMPUTER CARE - CARE'
@@ -87,7 +87,6 @@ def get_pnl_data(period_list, filters):
 
 		if parent_data:
 			add_blank_row(data)
-
 
 	return data
 
