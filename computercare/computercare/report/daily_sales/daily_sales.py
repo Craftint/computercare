@@ -104,43 +104,42 @@ def get_columns(invoice_list, additional_table_columns):
 def get_conditions(filters):
 	conditions = ""
 
-	if filters.get("company"): conditions += " and company=%(company)s"
-	if filters.get("customer"): conditions += " and customer = %(customer)s"
+	if filters.get("company"): conditions += " and company='%s'"%(filters.company)
+	if filters.get("customer"): conditions += " and customer = '%s'"%(filters.company)
 
-	if filters.get("from_date"): conditions += " and posting_date >= %(from_date)s"
-	if filters.get("to_date"): conditions += " and posting_date <= %(to_date)s"
+	if filters.get("from_date"): conditions += " and posting_date >= '%s'"%(filters.from_date)
+	if filters.get("to_date"): conditions += " and posting_date <= '%s'"%(filters.to_date)
 
-	if filters.get("owner"): conditions += " and st.sales_person = %(sales_person)s"
+	if filters.get("owner"): conditions += " and st.sales_person = '%s'"%(filters.sales_person)
 
 	if filters.get("mode_of_payment"):
 		conditions += """ and exists(select name from `tabSales Invoice Payment`
 			 where parent=`tabSales Invoice`.name
-			 	and ifnull(`tabSales Invoice Payment`.mode_of_payment, '') = %(mode_of_payment)s)"""
+			 	and ifnull(`tabSales Invoice Payment`.mode_of_payment, '') = '%s')"""%(filters.mode_of_payment)
 
 	if filters.get("cost_center"):
-		conditions +=  """ and s.cost_center = %(cost_center)s"""
+		conditions +=  " and s.cost_center = '%s'"%(filters.cost_center)
 		
 	else:
 		costcenter_list = get_costcenter_list(filters)
 		cost_center = []
 		for i in costcenter_list:
-			cost_center.append(i.get("name").encode("utf-8"))
+			cost_center.append(i.get("name"))
 		cost_center = tuple(cost_center)
-		
 		if len(costcenter_list) == 1:
 			for i in costcenter_list:
-				conditions +=  """ and s.cost_center = '"""+ str(i.get("name").encode("utf-8")) + """'"""
+				conditions +=  " and s.cost_center = '%s'"%(str(i.get("name")))
 		else:
-			conditions +=  """ and s.cost_center in """+ str(cost_center)
+			conditions +=  " and s.cost_center in "+ str(cost_center)
 
 	if filters.get("warehouse"):
-		conditions +=  """ and s.warehouse = %(warehouse)s"""
+		conditions +=  " and s.warehouse = %s"%(filters.warehouse)
 
 	if filters.get("brand"):
-		conditions +=  """ and s.brand = %(brand)s"""
+		conditions +=  " and s.brand = '%s'"%(filters.brand)
 	
 	if filters.get("item_group"):
-		conditions +=  """ and s.item_group = %(item_group)s"""
+		conditions +=  " and s.item_group = '%s'"%(filters.item_group)
 
 	return conditions
 
