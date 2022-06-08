@@ -47,6 +47,12 @@ frappe.query_reports["Stock Movement Summary"] = {
 			"options": "Item Group"
 		},
 		{
+			"fieldname":"warehouse",
+			"label": __("Warehouse"),
+			"fieldtype": "Link",
+			"options": "Warehouse"
+		},
+		{
 			"fieldname":"brand",
 			"label": __("Brand"),
 			"fieldtype": "Link",
