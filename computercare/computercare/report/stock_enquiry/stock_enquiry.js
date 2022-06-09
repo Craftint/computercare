@@ -59,14 +59,15 @@ frappe.query_reports["Stock Enquiry"] = {
 			"fieldtype": "Link",
 			"width": "80",
 			"reqd": 1,
-			"options": "Item Group"
+			"options": "Item Group",
+			"default": "All Item Groups"
 		},
 		{
 			"fieldname": "warehouse",
 			"label": __("Warehouse"),
 			"fieldtype": "Link",
 			"width": "80",
-			"options": "Warehouse"
+			"options": "Warehouse",
 		},
 		{
 			"fieldname": "show_variant_attributes",
